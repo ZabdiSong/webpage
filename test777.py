@@ -1,4 +1,5 @@
-mport tkinter as tk
+import streamlit as st
+import tkinter as tk
 from tkinter import ttk
 import webbrowser
 
