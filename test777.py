@@ -19,13 +19,13 @@ if answer == "基础设置":
     if column1 == "员工设置":
         st.empty()
         st.title("员工设置")
-        set1 = st.button("新增", "修改", "删除")
+        set1 = st.selectbox("新增", "修改", "删除")
     
     # Set 2
     if column1 == "油品设置":
         st.empty()
         st.title("油品设置")
-        set2 = st.button("新增", "修改", "启用", "禁用")
+        set2 = st.selectbox("新增", "修改", "启用", "禁用")
 
 
 # Column 2
@@ -38,13 +38,13 @@ if answer == "销售管理":
     if column2 == "销售单制作（主管）":
         st.empty()
         st.title("销售单制作（主管）")
-        set3 = st.button("确定", "取消")
+        set3 = st.selectbox("确定", "取消")
 
     # Set 4
     if column2 == "分提单制作":
         st.empty()
         st.title("分提单制作")
-        set4 = st.button("查询", "分提", "作废")
+        set4 = st.selectbox("查询", "分提", "作废")
 
 # Column 3
 if answer == "报表":
