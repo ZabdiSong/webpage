@@ -20,5 +20,11 @@ if answer == "基础设置":
         st.empty()
         st.title("员工设置")
         set1 = st.selectbox("设置选择", ("新增", "修改", "删除"))
+     # Set 2
+    elif column1 == "油品设置":
+        st.empty()
+        st.title("油品设置")
+        set2 = st.selectbox("设置选择", ("新增", "修改", "启用", "禁用"))
+
     
     
