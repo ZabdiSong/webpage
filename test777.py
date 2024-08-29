@@ -16,9 +16,7 @@ if answer == "基础设置":
     st.title("基础设置")
     column1 = st.selectbox("设置选择", ("员工设置", "油品设置"))
     
-    if column1 == "员工设置":
-        st.empty()
-        
+    
 
   
     
