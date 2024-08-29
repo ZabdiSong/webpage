@@ -22,7 +22,7 @@ if answer == "基础设置":
         set1 = st.selectbox("新增", "修改", "删除")
     
     # Set 2
-    if column1 == "油品设置":
+    elif column1 == "油品设置":
         st.empty()
         st.title("油品设置")
         set2 = st.selectbox("新增", "修改", "启用", "禁用")
@@ -41,7 +41,7 @@ if answer == "销售管理":
         set3 = st.selectbox("确定", "取消")
 
     # Set 4
-    if column2 == "分提单制作":
+    elif column2 == "分提单制作":
         st.empty()
         st.title("分提单制作")
         set4 = st.selectbox("查询", "分提", "作废")
@@ -59,7 +59,7 @@ if answer == "报表":
         set5 = st.button("查询")
 
     # Set 6
-    if column3 == "客存销售实时统计":
+    elif column3 == "客存销售实时统计":
         st.empty()
         st.title("客存销售实时统计")
         set6 = st.button("查询")
