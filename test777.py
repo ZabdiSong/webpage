@@ -13,6 +13,6 @@ answer = st.selectbox("分区选择", ("基础设置", "销售管理", "报表")
 if answer == "基础设置":
     st.empty()
     st.title("基础设置")
-    column1 = st.selectbox("设置选择", "员工设置", "油品设置")
+    column1 = st.selectbox("设置选择", ("员工设置", "油品设置"))
 
     
