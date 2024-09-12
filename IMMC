@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.empty
+st.empty()
 st.title("资助评估系统")
 
 answer1 = st.selectbox("请选择您的所在地区", ("上海", "江苏", "吉林", "河南", "山东", "浙江", "安徽", "辽宁"))
