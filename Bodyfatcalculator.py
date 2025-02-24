@@ -42,16 +42,16 @@ st.write(f"\nYour estimated body fat percentage is {body_fat_percentage:.1f}%")
 
 # Interpret body fat percentage
 if sex == "Male":
-    if body_fat_percentage <= 10:
+    if body_fat_percentage <= 15:
         st.warning("Your body fat percentage is very low. Consult a healthcare provider.")
-    elif 10 < body_fat_percentage < 22:
+    elif 15 < body_fat_percentage < 25:
         st.success("Your body fat percentage is optimal!")
     else:
         st.warning("Your body fat percentage is higher than normal. Consider regular exercise.")
 else:
-    if body_fat_percentage <= 15:
+    if body_fat_percentage <= 23:
         st.warning("Your body fat percentage is very low. Consult a healthcare provider.")
-    elif 15 < body_fat_percentage < 27:
+    elif 23 < body_fat_percentage < 33:
         st.success("Your body fat percentage is optimal!")
     else:
         st.warning("Your body fat percentage is higher than normal. Consider regular exercise.")
