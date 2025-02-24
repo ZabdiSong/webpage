@@ -25,7 +25,7 @@ st.write(f"\nYour BMI is {bmi:.2f}")
 # BMI interpretation
 if bmi <= 18:
     st.warning("You are underweight. Consider consulting a healthcare provider about a healthier diet.")
-elif 18 < bmi < 23:
+elif 18 < bmi < 24:
     st.success("You are at a healthy weight. Keep up the good work!")
 else:
     st.warning("You are overweight. Regular exercise and balanced diet are recommended.")
