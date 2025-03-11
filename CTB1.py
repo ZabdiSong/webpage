@@ -29,6 +29,12 @@ elif 18 < bmi < 24:
     st.success("You are at a healthy weight. Keep up the good work!")
 else:
     st.warning("You are overweight. Regular exercise and balanced diet are recommended.")
+    athelet = st.selectbox("Are you an athelte?", ["Yes", "No"])
+    if athelet == "Yes":
+        st.warning("Please ask your coach and doctor for better evaluation, your body is special, you need further medical supporting.)
+    else:
+        st.warning("You are obesed, this may be bad for your health, please contact your doctor for further supporting.")
+         
 
 # Body fat percentage calculation
 def calculate_body_fat(bmi, age, is_male):
