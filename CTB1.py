@@ -180,5 +180,4 @@ st.write(f"\n{evaluation_message}")
 
 # Add disclaimer
 st.markdown("***")
-st.info("Note: If you are an athlete, the results of this calculator may be wrong due to the special muscle proportion of your body, please follow your coach's instructions.")
-st.info("Note: These calculations are estimates. For accurate health assessments, consult a qualified healthcare professional.")
+st.info("Note: These calculations are estimates. For accurate health assessments, consult a qualified healthcare professional. If you are an athlete, the results of this calculator may be wrong due to the special muscle proportion of your body, please follow your coach's instructions.")
