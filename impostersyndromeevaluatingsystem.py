@@ -100,7 +100,7 @@ with st.form("imposter_form"):
             total_score += scale[st.session_state[key]]
             num_questions += 1
 
-    submitted = st.form_submit_button("Submit")
+    submitted = st.form_submit_button()
     st.session_state['form_submitted'] = submitted
 
 # Evaluating
