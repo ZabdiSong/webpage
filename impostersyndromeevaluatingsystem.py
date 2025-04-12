@@ -3,10 +3,12 @@ import streamlit as st
 # session state initialize
 if 'answered' not in st.session_state:
     st.session_state.answered = 0
-if 'stages' not in st.session_state:
-    st.session_state.stages = []
 if 'emoji' not in st.session_state:
     st.session_state.emoji = []
+if 'question_answered' not in st.session_state:
+    st.session_state.question_answered = set()
+if 'form_submitted' not in st.session_state:
+    st.session_state.form_submitted = False
 
 # Milestone
 milestones = {
@@ -102,10 +104,11 @@ with st.form("imposter_form"):
             num_questions += 1
 
     submitted = st.form_submit_button("Submit")
-    st.session_state['form_submitted'] = submitted
+    if submitted:
+        st.session_state.form_submitted = True
 
 # Evaluating
-if st.session_state.get('form_submitted'):
+if st.session_state.form_submitted:
     average = total_score/num_questions
     st.markdown("Evaluation results")
 
@@ -117,4 +120,3 @@ if st.session_state.get('form_submitted'):
 
     else:
         st.success("You may be experiencing low imposter syndrome tendencies.")
-    
