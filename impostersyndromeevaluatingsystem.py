@@ -1,5 +1,15 @@
 import streamlit as st
 
+# Reset function
+def reset_all():
+    for key in list(st.session_state.keys()):
+        del st.session_state[key]
+
+# Place this in the main app body
+if st.button("Reset"):
+    reset_all()
+    st.experimental_rerun()
+    
 # Questions and scale
 questions = {
     "Low Self-Esteem": [
