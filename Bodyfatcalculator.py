@@ -5,7 +5,7 @@ st.title("Body Health Calculator")
 
 # progress
 if "progress_value" not in st.session_state:
-    st.session_state.progress = 0
+    st.session_state.progress_value = 0
 
 st.markdown("Your progress")
 progress_display = st.progress(st.session_state.progress_value)
