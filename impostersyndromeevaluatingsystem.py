@@ -95,6 +95,14 @@ for category, q_list in questions.items():
         else:
             st.success("Answer ensured.")
 
+# --- SELECT SEX AT THE END ---
+st.subheader("Additional Info")
+st.selectbox(
+    "Please select your sex:",
+    options=["Prefer not to say", "Male", "Female", "Other"],
+    key="sex"
+)
+
 # --- SUBMIT ALL WHEN FINISHED ---
 if ensured_count == total_questions:
     if st.button("Submit All Answers"):
