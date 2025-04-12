@@ -5,7 +5,8 @@ if 'answered' not in st.session_state:
     st.session_state.answered = 0
 if 'stages' not in st.session_state:
     st.session_state.stages = []
-
+if 'emoji' not in st.session_state:
+    st.session_state.emoji = []
 
 # Milestone
 milestones = {
