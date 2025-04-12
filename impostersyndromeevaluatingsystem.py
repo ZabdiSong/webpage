@@ -1,6 +1,6 @@
 import streamlit as st
 
-# First: define questions
+# Questions and scale
 questions = {
     "Low Self-Esteem": [
         "I feel unworthy of my accomplishments, no matter how much I’ve achieved.",
@@ -43,7 +43,6 @@ questions = {
         "Do stereotypes in your environment affect how confident you feel in your abilities?"
     ]
 }
-# Answer scale
 scale = {
     "Strongly Disagree": 1,
     "Disagree": 2,
@@ -51,7 +50,6 @@ scale = {
     "Agree": 4,
     "Strongly Agree": 5
 }
-# Milestones
 milestones = {
     10: ("🥛", "You are allowed to feel unsure—and still be worthy. Just showing up is enough."),
     30: ("🥜", "You’re not a fraud—you’re just someone growing in a place that never taught you how to feel safe."),
@@ -59,77 +57,68 @@ milestones = {
     70: ("🫐", "You’ve worked hard. It’s not luck, and it’s not by accident. You’re allowed to claim it."),
     90: ("🍫", "The voice that says you don’t belong is just fear talking. And you’ve proven it wrong every single day."),
 }
-# Reset session state
-def reset_session_state():
-    st.session_state.answered = 0
-    st.session_state.emoji = []
-    st.session_state.question_answered = set()
+# --- INIT SESSION STATE ---
+if &apos;responses&apos; not in st.session_state:
+    st.session_state.responses = {}
+if &apos;form_submitted&apos; not in st.session_state:
     st.session_state.form_submitted = False
-    st.session_state.stages = set()
-    for category, qs in questions.items():
-        for i in range(len(qs)):
-            key = f"{category}_{i}"
-            if key in st.session_state:
-                del st.session_state[key]
+if &apos;emoji_shown&apos; not in st.session_state:
+    st.session_state.emoji_shown = set()
 
-# Initial state
-if 'answered' not in st.session_state:
-    reset_session_state()
+# --- RESET FUNCTION ---
+def reset_all():
+    st.session_state.responses = {}
+    st.session_state.form_submitted = False
+    st.session_state.emoji_shown = set()
+    st.experimental_rerun()
 
-# App title
+# --- PAGE HEADER ---
 st.title("Imposter Syndrome Evaluating System")
 
-# Progress bar calculation
-total_questions = sum(len(qs) for qs in questions.values())
-answered_now = sum(
-    1 for category, qs in questions.items()
-    for i in range(len(qs))
-    if f"{category}_{i}" in st.session_state
-)
-progress_percent = int((answered_now / total_questions) * 100)
+# --- RESET BUTTON ---
+st.button("Reset", on_click=reset_all)
 
-# Always show progress bar
+# --- PROGRESS CALCULATION ---
+total_questions = sum(len(qs) for qs in questions.values())
+answered_count = len(st.session_state.responses)
+progress_percent = int((answered_count / total_questions) * 100)
+
+# --- PROGRESS BAR ---
 st.subheader("Progress")
 st.progress(progress_percent)
 
-# Milestone feedback
+# --- MILESTONES ---
 for milestone, (emoji, message) in milestones.items():
-    if progress_percent >= milestone and milestone not in st.session_state.stages:
-        st.session_state.emoji.append(emoji)
-        st.session_state.stages.add(milestone)
+    if progress_percent >= milestone and milestone not in st.session_state.emoji_shown:
         st.markdown(f"### {emoji}")
         st.info(message)
+        st.session_state.emoji_shown.add(milestone)
 
-# Reset button
-if st.button("Reset"):
-    reset_session_state()
-    st.experimental_rerun()
-
-# Score storing and questions form
+# --- FORM ---
 with st.form("imposter_form"):
-    total_score = 0
-    num_questions = 0
-
     for category, qs in questions.items():
         st.subheader(category)
         for i, q in enumerate(qs):
             key = f"{category}_{i}"
-            response = st.radio(q, list(scale.keys()), key=key)
-            total_score += scale[response]
-            num_questions += 1
+            st.session_state.responses[key] = st.radio(
+                q,
+                options=list(scale.keys()),
+                key=key,
+                index=list(scale.keys()).index(st.session_state.responses.get(key, "Neutral")) if key in st.session_state.responses else 2
+            )
 
-    submitted = st.form_submit_button("Submit")
-    if submitted:
+    if st.form_submit_button("Submit"):
         st.session_state.form_submitted = True
 
-# Evaluation
+# --- EVALUATION ---
 if st.session_state.form_submitted:
-    average = total_score / num_questions
-    st.markdown("### Evaluation Results")
+    total_score = sum(scale[st.session_state.responses[key]] for key in st.session_state.responses)
+    avg_score = total_score / total_questions
 
-    if average >= 4:
+    st.markdown("### Evaluation Results")
+    if avg_score >= 4:
         st.error("You may be experiencing strong imposter syndrome tendencies.")
-    elif average >= 3:
+    elif avg_score >= 3:
         st.warning("You may be experiencing medium imposter syndrome tendencies.")
     else:
         st.success("You may be experiencing low imposter syndrome tendencies.")
