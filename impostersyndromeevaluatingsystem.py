@@ -1,5 +1,21 @@
 import streamlit as st
 
+# session state initialize
+if 'answered' not in st.session_state:
+    st.session_state.answered = 0
+if 'stages' not in st.session_state:
+    st.session_state.stages = []
+
+
+# Milestone
+milestones = {
+    10: ("🥛", "You are allowed to feel unsure—and still be worthy. Just showing up is enough."),
+    30: ("🥜", "You’re not a fraud—you’re just someone growing in a place that never taught you how to feel safe."),
+    50: ("🍌", "Impostor syndrome thrives in silence. And you’re breaking that silence, one breath at a time."),
+    70: ("🫐", "You’ve worked hard. It’s not luck, and it’s not by accident. You’re allowed to claim it."),
+    90: ("🍫", "The voice that says you don’t belong is just fear talking. And you’ve proven it wrong every single day."),
+}
+
 # initialize
 st.title("imposter syndrome evaluating system") 
 
@@ -56,20 +72,38 @@ scale = {
     "Strongly Agree":5
 }
 
-# score storing
-total_score = 0
-num_questions = 0
+# progress calculation
+total_questions = sum(len(qs) for qs in questions.values())
+progress_percent = int((st.session_state.answered / total_questions) * 100)
+st.subheader("Progress bar")
+st.progress(progress_percent)
 
-# Response
-for category, qs in questions.items():
-    st.subheader(category)
-    for q in qs:
-        response = st.radio(q, list(scale.keys()), key = q)
-        total_score += scale[response]
-        num_questions += 1
+# milestone presentation 
+for milestone, (emoji, message) in milestones.items():
+    if progress_percent >= milestone and milestone not in st.session_state.emoji_stages_shown:
+        st.session_state.emoji_stages_shown.append(milestone)
+        st.info(message)   
+
+# score storing
+with st.form("imposter_form"):
+    total_score = 0
+    num_questions = 0
+
+    for category, qs in questions.items():
+        st.subheader(category)
+        for i, q in enumerate(qs):
+            key = f"{category}_{i}"
+            if key not in st.session_state:
+                st.session_state[key] = st.radio(q, list(scale.keys()), key=key)
+                st.session_state.answered += 1
+            total_score += scale[st.session_state[key]]
+            num_questions += 1
+
+    submitted = st.form_submit_button("Submit")
+    
 
 # Evaluating
-if st.button("Submit"):
+if submitted:
     average = total_score/num_questions
     st.markdown("Evaluation results")
 
