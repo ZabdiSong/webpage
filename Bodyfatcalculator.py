@@ -3,6 +3,32 @@ import streamlit as st
 # Initialize Streamlit app
 st.title("Body Health Calculator")
 
+# progress
+if "progress_value" not in st,session_state:
+    st.session_state.progress(st.session_state.progress_value)
+
+st.markdown("Your progress")
+progress_display = st.progress(st.session_state.progress_value)
+
+if st.button("keep going"):
+    if st.session_state.progress_value <100:
+        st,session_state.progress_value += 1
+        progress_display.progress(st.session_state.progress_value)
+
+milestones = {
+    10: "A"
+    30: "B"
+}
+if st.session_state.progress_value in milestones:
+    st.success(milestones[st.session_state.progress_value])
+    user_input = st.text_input(" Record your thoughts or relections:")
+    if user_input:
+        st.write("You wrote", user_input)
+
+if st.session_state.progress_value == 100:
+    st.balloons()
+    st.success("Congratulations!")
+
 # Data input
 col1, col2 = st.columns(2)
 with col1:
