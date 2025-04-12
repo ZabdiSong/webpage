@@ -82,7 +82,7 @@ st.progress(progress_percent)
 # milestone presentation 
 for milestone, (emoji, message) in milestones.items():
     if progress_percent >= milestone and milestone not in st.session_state.stages:
-        st.session_state.emoji_stages_shown.append(milestone)
+        st.session_state.emoji.append(milestone)
         st.markdown(f"### {emoji}")
         st.info(message)   
 
