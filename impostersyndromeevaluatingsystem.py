@@ -79,6 +79,10 @@ scale = {
 total_questions = sum(len(qs) for qs in questions.values())
 progress_bar_placeholder = st.empty()
 
+# stages initialize
+if 'stages' not in st.session_state:
+    st.session_state.stages = set()
+
 # milestone presentation 
 for milestone, (emoji, message) in milestones.items():
     if progress_percent >= milestone and milestone not in st.session_state.stages:
