@@ -4,7 +4,7 @@ import streamlit as st
 st.title("Body Health Calculator")
 
 # progress
-if "progress_value" not in st,session_state:
+if "progress_value" not in st.session_state:
     st.session_state.progress(st.session_state.progress_value)
 
 st.markdown("Your progress")
