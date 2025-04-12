@@ -77,9 +77,7 @@ scale = {
 
 # progress calculation
 total_questions = sum(len(qs) for qs in questions.values())
-progress_percent = int((st.session_state.answered / total_questions) * 100)
-st.subheader("Progress bar")
-st.progress(progress_percent)
+progress_bar_placeholder = st.empty()
 
 # milestone presentation 
 for milestone, (emoji, message) in milestones.items():
