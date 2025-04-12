@@ -1,14 +1,14 @@
 import streamlit as st
 
 # session state initialize
-if 'answered' not in st.session_state:
+def reset_session_state():
     st.session_state.answered = 0
-if 'emoji' not in st.session_state:
     st.session_state.emoji = []
-if 'question_answered' not in st.session_state:
     st.session_state.question_answered = set()
-if 'form_submitted' not in st.session_state:
     st.session_state.form_submitted = False
+
+if 'answered' not in st.session_state:
+    reset_session_state()
 
 # Milestone
 milestones = {
@@ -82,9 +82,15 @@ progress_bar_placeholder = st.empty()
 # milestone presentation 
 for milestone, (emoji, message) in milestones.items():
     if progress_percent >= milestone and milestone not in st.session_state.stages:
-        st.session_state.emoji.append(milestone)
+        st.session_state.emoji.append(emoji)
+        st.session_state.stages.add(milestone)
         st.markdown(f"### {emoji}")
         st.info(message)   
+
+# reset button
+if st.button('Reset'):
+    reset_session_state()
+    st.experimental_rerun()
 
 # score storing
 with st.form("imposter_form"):
