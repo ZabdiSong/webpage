@@ -73,7 +73,7 @@ def reset_session_state():
                 del st.session_state[key]
 
 # Initial state
-if &apos;answered&apos; not in st.session_state:
+if 'answered' not in st.session_state:
     reset_session_state()
 
 # App title
