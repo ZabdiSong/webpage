@@ -16,7 +16,7 @@ if st.button("keep going"):
         progress_display.progress(st.session_state.progress_value)
 
 milestones = {
-    10: "A"
+    10: "A",
     30: "B"
 }
 if st.session_state.progress_value in milestones:
