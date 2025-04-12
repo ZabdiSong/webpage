@@ -104,7 +104,7 @@ with st.form("imposter_form"):
         st.session_state.form_submitted = True
 
 # progress bar
-progress_percent = int((st.session_state.answered / sum(lens(qs) for qs in questions.values())) * 100)
+progress_percent = int((st.session_state.answered / sum(len(qs) for qs in questions.values())) * 100)
 st.subheader("progress")
 st.progress(progress_percent)
 
