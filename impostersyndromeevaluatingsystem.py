@@ -1,38 +1,6 @@
 import streamlit as st
 
-# -----------------------------
-# Session State Initialization
-# -----------------------------
-if 'answered' not in st.session_state:
-    st.session_state.answered = 0
-if 'emoji' not in st.session_state:
-    st.session_state.emoji = []
-if 'question_answered' not in st.session_state:
-    st.session_state.question_answered = set()
-if 'form_submitted' not in st.session_state:
-    st.session_state.form_submitted = False
-if 'stages' not in st.session_state:
-    st.session_state.stages = set()
-
-# -----------------------------
-# Milestones Setup
-# -----------------------------
-milestones = {
-    10: ("🥛", "You are allowed to feel unsure—and still be worthy. Just showing up is enough."),
-    30: ("🥜", "You’re not a fraud—you’re just someone growing in a place that never taught you how to feel safe."),
-    50: ("🍌", "Impostor syndrome thrives in silence. And you’re breaking that silence, one breath at a time."),
-    70: ("🫐", "You’ve worked hard. It’s not luck, and it’s not by accident. You’re allowed to claim it."),
-    90: ("🍫", "The voice that says you don’t belong is just fear talking. And you’ve proven it wrong every single day."),
-}
-
-# -----------------------------
-# Title
-# -----------------------------
-st.title("Imposter Syndrome Evaluating System")
-
-# -----------------------------
-# Questions & Scales
-# -----------------------------
+# Questions and scale
 questions = {
     "Low Self-Esteem": [
         "I feel unworthy of my accomplishments, no matter how much I’ve achieved.",
@@ -84,60 +52,88 @@ scale = {
     "Strongly Agree": 5
 }
 
-# -----------------------------
-# Display Questions and Track Answers
-# -----------------------------
-total_score = 0
-num_questions = sum(len(qs) for qs in questions.values())
+milestones = {
+    10: ("🥛", "You are allowed to feel unsure—and still be worthy. Just showing up is enough."),
+    30: ("🥜", "You’re not a fraud—you’re just someone growing in a place that never taught you how to feel safe."),
+    50: ("🍌", "Impostor syndrome thrives in silence. And you’re breaking that silence, one breath at a time."),
+    70: ("🫐", "You’ve worked hard. It’s not luck, and it’s not by accident. You’re allowed to claim it."),
+    90: ("🍫", "The voice that says you don’t belong is just fear talking. And you’ve proven it wrong every single day."),
+}
 
-with st.form("evaluation_form"):
-    for category, qs in questions.items():
-        st.subheader(category)
-        for q in qs:
-            response = st.radio(q, list(scale.keys()), key=q, index=None)
-            # Mark question as answered
-            if response is not None:
-                if q not in st.session_state.question_answered:
-                    st.session_state.question_answered.add(q)
+# --- INIT SESSION STATE ---
+if 'responses' not in st.session_state:
+    st.session_state.responses = {}  # to store final answers
+if 'ensured' not in st.session_state:
+    st.session_state.ensured = set()   # keys of questions that were ensured
+if 'form_submitted' not in st.session_state:
+    st.session_state.form_submitted = False
+if 'emoji_shown' not in st.session_state:
+    st.session_state.emoji_shown = set()
 
-    submitted = st.form_submit_button("Submit")
+# --- RESET FUNCTION ---
+def reset_all():
+    st.session_state.responses = {}
+    st.session_state.ensured = set()
+    st.session_state.form_submitted = False
+    st.session_state.emoji_shown = set()
+    st.experimental_rerun()
 
-# -----------------------------
-# Progress Calculation
-# -----------------------------
-st.session_state.answered = len(st.session_state.question_answered)
-progress_percent = int((st.session_state.answered / num_questions) * 100)
-st.subheader("Progress Bar")
+# --- PAGE HEADER ---
+st.title("Imposter Syndrome Evaluating System")
+st.button("Reset", on_click=reset_all)
+
+# --- PROGRESS CALCULATION ---
+# Total number of questions across all categories
+total_questions = sum(len(qs) for qs in questions.values())
+# Here we use the number of ensured (locked in) answers to compute progress.
+progress_percent = int((len(st.session_state.ensured) / total_questions) * 100)
+
+st.subheader("Progress")
 st.progress(progress_percent)
 
-# -----------------------------
-# Milestone Rewards
-# -----------------------------
+# --- MILESTONES ---
 for milestone, (emoji, message) in milestones.items():
-    if progress_percent >= milestone and milestone not in st.session_state.stages:
-        st.session_state.emoji.append(emoji)
-        st.session_state.stages.add(milestone)
+    if progress_percent >= milestone and milestone not in st.session_state.emoji_shown:
         st.markdown(f"### {emoji}")
         st.info(message)
+        st.session_state.emoji_shown.add(milestone)
 
-# -----------------------------
-# Evaluation Logic
-# -----------------------------
-if submitted:
-    if len(st.session_state.question_answered) < num_questions:
-        st.warning("Please answer all questions before submitting.")
-    else:
-        for category, qs in questions.items():
-            for q in qs:
-                response = st.session_state.get(q)
-                if response:
-                    total_score += scale[response]
+st.write("Answer each question and click **Ensure** to lock in your response.")
 
-        average = total_score / num_questions
-        st.markdown("### Evaluation Results")
-        if average >= 4:
-            st.error("You may be experiencing strong imposter syndrome tendencies.")
-        elif average >= 3:
-            st.warning("You may be experiencing medium imposter syndrome tendencies.")
+# --- RENDER QUESTIONS ---
+# We loop through each question and render a radio widget with an Ensure button
+for category, qs in questions.items():
+    st.subheader(category)
+    for i, q in enumerate(qs):
+        key_radio = f"{category}_{i}_radio"  # key for the radio widget
+        key = f"{category}_{i}"              # key for storing ensured answer
+        # Always show the radio widget.
+        default_index = list(scale.keys()).index(st.session_state.responses.get(key, "Neutral")) if key in st.session_state.responses else 2
+        answer = st.radio(q, options=list(scale.keys()), key=key_radio, index=default_index)
+        
+        # If the answer for this question is not yet ensured, show the button.
+        if key not in st.session_state.ensured:
+            if st.button("Ensure", key=f"{key}_ensure"):
+                st.session_state.responses[key] = answer
+                st.session_state.ensured.add(key)
+                st.experimental_rerun()
         else:
-            st.success("You may be experiencing low imposter syndrome tendencies.")
+            st.write("Answer ensured!")
+
+# --- SUBMIT FOR FINAL EVALUATION ---
+if len(st.session_state.ensured) == total_questions:
+    if st.button("Submit All Answers"):
+        st.session_state.form_submitted = True
+
+# --- EVALUATION ---
+if st.session_state.form_submitted:
+    total_score = sum(scale[st.session_state.responses[key]] for key in st.session_state.responses)
+    avg_score = total_score / total_questions
+
+    st.markdown("### Evaluation Results")
+    if avg_score >= 4:
+        st.error("You may be experiencing strong imposter syndrome tendencies.")
+    elif avg_score >= 3:
+        st.warning("You may be experiencing medium imposter syndrome tendencies.")
+    else:
+        st.success("You may be experiencing low imposter syndrome tendencies.")
