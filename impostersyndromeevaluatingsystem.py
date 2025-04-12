@@ -101,10 +101,10 @@ with st.form("imposter_form"):
             num_questions += 1
 
     submitted = st.form_submit_button("Submit")
-    
+    st.session_state['form_submitted'] = submitted
 
 # Evaluating
-if submitted:
+if st.session_state.get('form_submitted'):
     average = total_score/num_questions
     st.markdown("Evaluation results")
 
