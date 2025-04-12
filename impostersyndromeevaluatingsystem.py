@@ -1,6 +1,6 @@
 import streamlit as st
 
-# Questions and scale
+# --- QUESTIONS AND SCALE ---
 questions = {
     "Low Self-Esteem": [
         "I feel unworthy of my accomplishments, no matter how much I’ve achieved.",
@@ -52,76 +52,51 @@ scale = {
     "Strongly Agree": 5
 }
 
-milestones = {
-    10: ("🥛", "You are allowed to feel unsure—and still be worthy. Just showing up is enough."),
-    30: ("🥜", "You’re not a fraud—you’re just someone growing in a place that never taught you how to feel safe."),
-    50: ("🍌", "Impostor syndrome thrives in silence. And you’re breaking that silence, one breath at a time."),
-    70: ("🫐", "You’ve worked hard. It’s not luck, and it’s not by accident. You’re allowed to claim it."),
-    90: ("🍫", "The voice that says you don’t belong is just fear talking. And you’ve proven it wrong every single day."),
-}
-
 # --- INIT SESSION STATE ---
 if 'responses' not in st.session_state:
-    st.session_state.responses = {}  # to store final answers
+    st.session_state.responses = {}
 if 'ensured' not in st.session_state:
-    st.session_state.ensured = set()   # keys of questions that were ensured
+    st.session_state.ensured = {}
 if 'form_submitted' not in st.session_state:
     st.session_state.form_submitted = False
-if 'emoji_shown' not in st.session_state:
-    st.session_state.emoji_shown = set()
 
-# --- RESET FUNCTION ---
-def reset_all():
-    st.session_state.responses = {}
-    st.session_state.ensured = set()
-    st.session_state.form_submitted = False
-    st.session_state.emoji_shown = set()
-    st.experimental_rerun()
+# --- CALCULATE TOTALS ---
+total_questions = sum(len(q_list) for q_list in questions.values())
+ensured_count = len(st.session_state.ensured)
+progress_percent = int((ensured_count / total_questions) * 100)
 
-# --- PAGE HEADER ---
+# --- DISPLAY HEADER AND PROGRESS ---
 st.title("Imposter Syndrome Evaluating System")
-st.button("Reset", on_click=reset_all)
-
-# --- PROGRESS CALCULATION ---
-# Total number of questions across all categories
-total_questions = sum(len(qs) for qs in questions.values())
-# Here we use the number of ensured (locked in) answers to compute progress.
-progress_percent = int((len(st.session_state.ensured) / total_questions) * 100)
-
-st.subheader("Progress")
 st.progress(progress_percent)
+st.write(f"Progress: {ensured_count} / {total_questions} questions ensured")
 
-# --- MILESTONES ---
-for milestone, (emoji, message) in milestones.items():
-    if progress_percent >= milestone and milestone not in st.session_state.emoji_shown:
-        st.markdown(f"### {emoji}")
-        st.info(message)
-        st.session_state.emoji_shown.add(milestone)
-
-st.write("Answer each question and click **Ensure** to lock in your response.")
-
-# --- RENDER QUESTIONS ---
-# We loop through each question and render a radio widget with an Ensure button
-for category, qs in questions.items():
+# --- DISPLAY QUESTIONS + ENSURE ---
+for category, q_list in questions.items():
     st.subheader(category)
-    for i, q in enumerate(qs):
-        key_radio = f"{category}_{i}_radio"  # key for the radio widget
-        key = f"{category}_{i}"              # key for storing ensured answer
-        # Always show the radio widget.
-        default_index = list(scale.keys()).index(st.session_state.responses.get(key, "Neutral")) if key in st.session_state.responses else 2
-        answer = st.radio(q, options=list(scale.keys()), key=key_radio, index=default_index)
-        
-        # If the answer for this question is not yet ensured, show the button.
-        if key not in st.session_state.ensured:
-            if st.button("Ensure", key=f"{key}_ensure"):
-                st.session_state.responses[key] = answer
-                st.session_state.ensured.add(key)
+    for idx, question in enumerate(q_list):
+        q_key = f"{category}_{idx}"
+        response_key = f"{q_key}_response"
+
+        # Default radio selection
+        default = st.session_state.responses.get(response_key, "Neutral")
+        selected = st.radio(
+            question,
+            list(scale.keys()),
+            key=response_key,
+            index=list(scale.keys()).index(default)
+        )
+
+        # ENSURE BUTTON
+        if q_key not in st.session_state.ensured:
+            if st.button(f"Ensure", key=f"ensure_{q_key}"):
+                st.session_state.responses[response_key] = selected
+                st.session_state.ensured[q_key] = True
                 st.experimental_rerun()
         else:
-            st.write("Answer ensured!")
+            st.success("Answer ensured.")
 
-# --- SUBMIT FOR FINAL EVALUATION ---
-if len(st.session_state.ensured) == total_questions:
+# --- SUBMIT ALL WHEN FINISHED ---
+if ensured_count == total_questions:
     if st.button("Submit All Answers"):
         st.session_state.form_submitted = True
 
