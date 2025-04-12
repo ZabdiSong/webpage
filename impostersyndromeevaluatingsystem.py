@@ -4,7 +4,7 @@ import streamlit as st
 # (Assume `questions` and `scale` dicts are already declared)
 
 # Initialize session state
-if &apos;responses&apos; not in st.session_state:
+if 'response' not in st.session_state:
     st.session_state.responses = {}
 
 # Calculate total number of questions
