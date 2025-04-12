@@ -64,7 +64,7 @@ num_questions = 0
 for category, qs in questions.items():
     st.subheader(category)
     for q in qs:
-        response = st.studio(q, list(scale.keys()), key = q)
+        response = st.radio(q, list(scale.keys()), key = q)
         total_score += scale[response]
         num_questions += 1
 
