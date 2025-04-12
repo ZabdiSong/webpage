@@ -95,12 +95,12 @@ with st.form("imposter_form"):
         for i, q in enumerate(qs):
             key = f"{category}_{i}"
             if key not in st.session_state:
-                st.session_state[key] = st.radio(q, list(scale.keys()), key=key)
+                response = st,radio(q, list(scale.keys()), key=key)
                 st.session_state.answered += 1
-            total_score += scale[st.session_state[key]]
+            total_score += scale[response]
             num_questions += 1
 
-    submitted = st.form_submit_button()
+    submitted = st.form_submit_button("Submit")
     st.session_state['form_submitted'] = submitted
 
 # Evaluating
