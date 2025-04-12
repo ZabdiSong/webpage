@@ -1,84 +1,54 @@
 import streamlit as st
 
-# initialize
-st.title("imposter syndrome evaluating system") 
+# Define your questions and scale as before...
+# (Assume `questions` and `scale` dicts are already declared)
 
-# questions
-questions = {
-    "Low Self-Esteem": [
-        "I feel unworthy of my accomplishments, no matter how much I’ve achieved.",
-        "I downplay my successes or attribute them to luck.",
-        "I feel like others have been deceived into thinking I’m more competent than I really am.",
-    ],
-    "Depression and Anxiety": [
-        "I feel helpless or overwhelmed even when meeting expectations.",
-        "I often experience intense negative feelings related to my work or performance.",
-        "I feel stressed or anxious when I’m acknowledged or praised.",
-    ],
-    "Upbringing and Parenting Style": [
-        "My caregivers rarely praised or encouraged me when I was a child.",
-        "I was only praised when I achieved something.",
-        "I felt like approval was conditional on success.",
-    ],
-    "Social Media": [
-        "I feel pressure to keep up with the perfect lives shown on social media.",
-        "I compare my achievements with others online.",
-        "I rely on online feedback or validation to feel good about myself.",
-    ],
-     "Being Different from Peers": [
-        "Do you feel disconnected or out of place among your peers, even in familiar settings?",
-        "How often do you question your achievements because you feel different from others?",
-        "Do you find it hard to relate to others in your academic or professional environment due to personal differences?"
-    ],
-    "Academia / Working Atmosphere": [
-        "Does the competitive or high-pressure environment at work or school make you question your capabilities?",
-        "How often do you feel like you're falling behind your peers or colleagues?",
-        "Do you experience stress when trying to meet the expectations of your institution or workplace?"
-    ],
-    "Perfectionism": [
-        "Do you feel that even the smallest flaw in your work means complete failure?",
-        "How often are you afraid of making mistakes, even when learning something new?",
-        "When something doesn’t go perfectly, do you dwell on it or see it as a reflection of your worth?"
-    ],
-    "Stereotypes": [
-        "Do you feel your achievements are overlooked or diminished because of assumptions about your identity (e.g., gender, race, background)?",
-        "Have you ever felt that your success was attributed to tokenism rather than your own merit?",
-        "Do stereotypes in your environment affect how confident you feel in your abilities?"
-    ]
+# Initialize session state
+if &apos;responses&apos; not in st.session_state:
+    st.session_state.responses = {}
+
+# Calculate total number of questions
+total_questions = sum(len(qs) for qs in questions.values())
+answered_questions = len(st.session_state.responses)
+
+# Progress Calculation
+progress = int((answered_questions / total_questions) * 100)
+st.markdown("### Fear / Anxiety Progress")
+st.progress(progress)
+
+# Emoji Nodes
+emoji_nodes = {
+    10: "🥛",
+    30: "🥜",
+    50: "🍌",
+    70: "🫐",
+    90: "🍫",
+    100: "💥"
 }
+if progress in emoji_nodes:
+    st.markdown(f"#### {emoji_nodes[progress]}")
 
-# options
-scale = {
-    "Strongly Disagree": 1,
-    "Disagree": 2,
-    "Neutral": 3,
-    "Agree": 4,
-    "Strongly Agree":5
-}
-
-# score storing
-total_score = 0
-num_questions = 0
-
-# Response
+# Questionnaire
 for category, qs in questions.items():
     st.subheader(category)
     for q in qs:
-        response = st.radio(q, list(scale.keys()), key = q)
-        total_score += scale[response]
-        num_questions += 1
+        if q not in st.session_state.responses:
+            response = st.radio(q, list(scale.keys()), key=q)
+            st.session_state.responses[q] = response
 
-# Evaluating
+# Evaluation
 if st.button("Submit"):
-    average = total_score/num_questions
-    st.markdown("Evaluation results")
-
-    if average >=4:
-        st.error("You may be experiencing strong imposter syndrome tendencies.")
-
-    elif average >= 3:
-        st.warning("You may be experiencing medium imposter syndrome tendencies.")
-
+    if len(st.session_state.responses) < total_questions:
+        st.warning("Please answer all questions before submitting.")
     else:
-        st.success("You may be experiencing low imposter syndrome tendencies.")
-    
+        scores = [scale[resp] for resp in st.session_state.responses.values()]
+        average = sum(scores) / len(scores)
+
+        st.markdown("## Evaluation Results")
+        if average >= 4:
+            st.error("You may be experiencing **strong** imposter syndrome tendencies.")
+        elif average >= 3:
+            st.warning("You may be experiencing **moderate** imposter syndrome tendencies.")
+        else:
+            st.success("You may be experiencing **low** imposter syndrome tendencies.")
+        st.balloons()  # Celebration at 100%
