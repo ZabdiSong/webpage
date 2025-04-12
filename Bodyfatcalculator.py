@@ -12,7 +12,7 @@ progress_display = st.progress(st.session_state.progress_value)
 
 if st.button("keep going"):
     if st.session_state.progress_value <100:
-        st,session_state.progress_value += 1
+        st.session_state.progress_value += 1
         progress_display.progress(st.session_state.progress_value)
 
 milestones = {
