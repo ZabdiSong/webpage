@@ -136,4 +136,4 @@ if st.session_state.form_submitted and num_questions > 0:
     elif average >= 3:
         st.warning("You may be experiencing medium imposter syndrome tendencies.")
     else:
-        st.success("You may be experiencing low imposter syndrome tendencies."
+        st.success("You may be experiencing low imposter syndrome tendencies.")
