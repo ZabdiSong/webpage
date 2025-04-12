@@ -49,7 +49,36 @@ questions = {
 
 # options
 scale = {
-    "Disagree": 1,
-    "Neutral": 2,
-    "Agree": 3
+    "Strongly Disagree": 1,
+    "Disagree": 2,
+    "Neutral": 3,
+    "Agree": 4,
+    "Strongly Agree":5
 }
+
+# score storing
+total_score = 0
+num_questions = 0
+
+# Response
+for category, qs in questions.items():
+    st.subheader(category)
+    for q in qs:
+        response = st.studio(q, list(scale.keys()), key = q)
+        total_score += scale[response]
+        num_questions += 1
+
+# Evaluating
+if st.button("Submit"):
+    average = total_score/num_questions
+    st.markdown("Evaluation results")
+
+    if average >=4:
+        st.error("You may be experiencing strong imposter syndrome tendencies.")
+
+    elif average >= 3:
+        st.warning("You may be experiencing medium imposter syndrome tendencies.")
+
+    else:
+        st.success("You may be experiencing low imposter syndrome tendencies.")
+    
