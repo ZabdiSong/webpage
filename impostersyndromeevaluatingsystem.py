@@ -58,11 +58,11 @@ milestones = {
     90: ("🍫", "The voice that says you don’t belong is just fear talking. And you’ve proven it wrong every single day."),
 }
 # --- INIT SESSION STATE ---
-if &apos;responses&apos; not in st.session_state:
+if 'response' not in st.session_state:
     st.session_state.responses = {}
-if &apos;form_submitted&apos; not in st.session_state:
+if 'submitted' not in st.session_state:
     st.session_state.form_submitted = False
-if &apos;emoji_shown&apos; not in st.session_state:
+if 'emoji' not in st.session_state:
     st.session_state.emoji_shown = set()
 
 # --- RESET FUNCTION ---
