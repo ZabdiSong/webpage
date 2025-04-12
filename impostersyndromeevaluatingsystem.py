@@ -95,7 +95,7 @@ with st.form("imposter_form"):
         for i, q in enumerate(qs):
             key = f"{category}_{i}"
             if key not in st.session_state:
-                response = st,radio(q, list(scale.keys()), key=key)
+                response = st.radio(q, list(scale.keys()), key=key)
                 st.session_state.answered += 1
             total_score += scale[response]
             num_questions += 1
