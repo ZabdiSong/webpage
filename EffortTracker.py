@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.title("Effort Tracker")
+st.title("Own it log - your effort tracker")
 
 # input
 with st.form("init_form", clear_on_submit=False):
