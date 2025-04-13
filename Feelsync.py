@@ -6,7 +6,7 @@ positive_words = ["grateful", "happy", "calm", "hope", "safe", "love", "joy", "p
 negative_words = ["anxious", "afraid", "sad", "angry", "nervous", "lonely", "panic", "overwhelmed"]
 
 # initialize
-st.markdown("### Mindfulness Journal")
+st.markdown("### Feelsync")
 st.markdown("> You are currently experiencing an uncomfortable emotion. We are here with you to witness it together. Write down the emotions and thoughts that you are currently feeling.")
 
 # user input
