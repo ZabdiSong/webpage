@@ -248,7 +248,7 @@ else:
 
     st.subheader("🧬 Your Amino Acid Personality")
 
-    st.markdown(f"### {result} — {data['type']}")
+    st.markdown(f"### {data['name']}")
 
     st.write(data["desc_cn"])
 
